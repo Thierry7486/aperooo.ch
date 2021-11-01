@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Apero;
 use App\Models\Postulation;
+
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -54,10 +56,20 @@ class PostulationController extends Controller
     {
         $this->authorize('create', [Postulation::class, $apero]);
 
-        Postulation::create([
-            'user_id' => Auth::user()->id,
-            'apero_id' => $apero->id,
-        ]);
+        try {
+            Postulation::create([
+                'user_id' => Auth::user()->id,
+                'apero_id' => $apero->id,
+            ]);
+        } catch (QueryException $e) {
+            $sqlErrorCode = $e->errorInfo[1];
+
+            switch ($sqlErrorCode) {
+                case '1062':
+                    back()->with('error', 'alreadyPostulate');
+                    break;
+            }
+        }
 
         return redirect()->route('aperos.show', $apero->id);
     }
