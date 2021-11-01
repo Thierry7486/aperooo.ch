@@ -105,6 +105,8 @@ class PostulationController extends Controller
      */
     public function cancel(Request $request, Apero $apero, Postulation $postulation)
     {
+        $this->authorize('cancel', [$postulation, $apero]);
+
         $postulation->status = 'cancelled';
         $postulation->save();
 
