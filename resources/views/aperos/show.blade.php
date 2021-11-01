@@ -3,12 +3,6 @@
 @section('content')
     {{ $apero->host->username }} - {{ $apero->start }} - {{ $apero->address }}
 
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ __('postulations.' . session('error')) }}
-        </div>
-    @endif
-
     @can ('create', [App\Models\Postulation::class, $apero])
         <form action="{{ route('postulations.store', $apero) }}" method="post">
             @csrf

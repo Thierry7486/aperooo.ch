@@ -66,7 +66,10 @@ class PostulationController extends Controller
 
             switch ($sqlErrorCode) {
                 case '1062':
-                    back()->with('error', 'alreadyPostulate');
+                    back()->with('alert', [
+                        'message' => 'postulations.alreadyPostulate',
+                        'type' => 'error',
+                    ]);
                     break;
             }
         }
